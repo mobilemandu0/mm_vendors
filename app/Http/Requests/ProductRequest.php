@@ -24,16 +24,33 @@ class ProductRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'name' => ['required', 'string'],
-            'category_id'=>['required','array'],
-            'description'=>['nullable','string'],
-            'price'=>['nullable','numeric'],
-            'image'=>['nullable','mimes:jpeg,png,jpg,gif,svg,ico,pdf','max:2048'],
-            'status'=>['required',new Enum(ProductStatus::class)],
-            'alt_text'=>['nullable','string'],
+            'category_id' => ['required', 'array'],
+            'category_id.*' => ['integer'],
+            'brand_id' => ['nullable', 'numeric'],
+            'description' => ['nullable', 'string'],
+            'short_description' => ['nullable', 'string'],
+            'price' => ['nullable', 'numeric'],
+            'warranty' => ['nullable', 'string'],
+            'image' => ['nullable', 'mimes:jpeg,png,jpg,gif,svg,ico,pdf', 'max:2048'],
+            'status' => ['required', new Enum(ProductStatus::class)],
+            'alt_text' => ['nullable', 'string'],
             'keywords' => ['nullable', 'string'],
+            'in_stock' => ['nullable', 'boolean'],
+            'wholesale_product' => ['nullable', 'boolean'],
+            'wholesale_min_qty' => ['nullable', 'integer', 'min:5'],
         ];
+
+        if ($this->isMethod('patch') || $this->isMethod('put')) {
+            $rules['slug'] = [
+                'required',
+                'string',
+                Rule::unique('products', 'slug')->ignore($this->route('product')->id),
+            ];
+        }
+
+        return $rules;
     }
 
     protected function passedValidation()

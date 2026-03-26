@@ -2,39 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Models\Order;
 use App\Models\Product;
 use Spatie\Activitylog\Models\Activity; // Import Spatie's Activity model
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function dashboard()
     {
-        $userCount = User::count();
-        $orderCount = Order::count();
-        $totalRevenue = Order::sum('grand_total');
-        $pendingOrderCount = Order::where('status', 'pending')->count();
-        $recentOrders = Order::latest()->take(5)->get();
-        $recentUsers = User::latest()->take(5)->get();
-        $recentProducts = Product::with('variants')->latest()->take(5)->get();
-        $activities = Activity::latest()->take(10)->get(); // Fetch the latest 10 activities
+        $user = Auth::user();
+        $recentProducts = Product::with('variants')
+            ->where('brand_id', $user->brand_id)
+            ->latest()
+            ->take(5)
+            ->get();
+        $activities = Activity::where('causer_id', $user->id)
+            ->latest()
+            ->take(10)
+            ->get();
 
-        return view('admin.dashboard', compact(
-            'userCount',
-            'orderCount',
-            'totalRevenue',
-            'pendingOrderCount',
-            'recentOrders',
-            'recentUsers',
-            'recentProducts',
-            'activities'
-        ));
-    }
-
-    public function test()
-    {
-        return User::with('roles')->get();
+        return view('admin.dashboard', compact('recentProducts', 'activities'));
     }
 }

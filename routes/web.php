@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
@@ -12,8 +11,8 @@ Route::middleware([
     'ensure-user-active',
     'ensure-user-vendor'
 ])->group(function () {
-    Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
-    Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+    Route::redirect('/', '/products');
+    Route::redirect('/dashboard', '/products')->name('dashboard');
     //Order routes
     Route::get('/orders', [OrderController::class, 'index'])->name('orders')->middleware('can:browse-orders');
     Route::middleware('can:add-orders')->group(function () {
@@ -56,7 +55,6 @@ Route::middleware([
         Route::delete('/products/features/delete/{feature}', [ProductController::class, 'deleteFeatures'])->name('product.feature.delete');
         Route::delete('/products/features/delete_all/{product}', [ProductController::class, 'deleteAllFeatures'])->name('product.features.delete.all');
 
-        Route::get('/products/images/link-images', [ProductController::class, 'linkImages']);
         Route::get('/products/images/{product}', [ProductController::class, 'manageImages'])->name('product.images');
         Route::post('/products/images/insert/{product}', [ProductController::class, 'insertImages'])->name('product.image.insert');
         Route::patch('/products/images/edit/{product}', [ProductController::class, 'updateImages'])->name('product.image.update');

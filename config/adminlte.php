@@ -152,7 +152,7 @@ return [
     |
     */
 
-    'layout_topnav' => null,
+    'layout_topnav' => true,
     'layout_boxed' => null,
     'layout_fixed_sidebar' => null,
     'layout_fixed_navbar' => null,
@@ -236,7 +236,7 @@ return [
     |
     */
 
-    'right_sidebar' => true,
+    'right_sidebar' => false,
     'right_sidebar_icon' => 'fas fa-list',
     'right_sidebar_theme' => 'dark',
     'right_sidebar_slide' => true,
@@ -257,7 +257,7 @@ return [
     */
 
     'use_route_url' => false,
-    'dashboard_url' => 'dashboard',
+    'dashboard_url' => 'products',
     'logout_url' => 'logout',
     'login_url' => 'login',
     'register_url' => 'register',
@@ -293,40 +293,19 @@ return [
     |
     */
     'menu' => [
-        // Navbar items:
         [
-            'type'         => 'navbar-search',
-            'text'         => 'search',
-            'topnav_right' => false,
-        ],
-        [
-            'type'         => 'fullscreen-widget',
-            'topnav_right' => false,
-        ],
-
-        // Sidebar items:
-        [
-            'type' => 'sidebar-menu-search',
-            'text' => 'search',
-            'key' => 'search',
-        ],
-        [
-            'header' => 'PRODUCTS',
+            'text' => 'Products',
+            'url' => 'products',
+            'icon' => 'fas fa-box',
             'can' => ['browse-products'],
+            'topnav' => true,
         ],
         [
-            'text'    => 'Products',
-            'icon'    => 'fas fa-box', // Updated icon for Products
-            'can' => ['browse-products'],
-            'submenu' => [
-                [
-                    'icon'    => 'fas fa-boxes', // Updated icon for managing Products
-                    'text' => 'Manage Products',
-                    'url'  => 'products',
-                    'can' => ['browse-products'],
-                    'active' => ['products', 'products*', 'regex:@^content/[0-9]+$@'],
-                ],
-            ],
+            'text' => 'Orders',
+            'url' => 'orders',
+            'icon' => 'fas fa-shopping-bag',
+            'can' => ['browse-orders'],
+            'topnav' => true,
         ],
     ],
 

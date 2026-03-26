@@ -15,14 +15,26 @@ use Laravel\Scout\Searchable;
 class Product extends Model implements HasMedia
 {
     use HasFactory, LogsActivity, HasSlug, InteractsWithMedia, Searchable;
+
     protected $fillable = [
         'brand_id',
         'name',
         'description',
+        'short_description',
         'price',
+        'warranty',
         'status',
+        'in_stock',
         'alt_text',
-        'keywords'
+        'keywords',
+        'slug',
+        'wholesale_product',
+        'wholesale_min_qty',
+    ];
+
+    protected $casts = [
+        'in_stock' => 'boolean',
+        'wholesale_product' => 'boolean',
     ];
 
     public function categories()

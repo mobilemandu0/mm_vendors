@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
@@ -19,7 +20,9 @@ class AuthenticationTest extends TestCase
 
     public function test_users_can_authenticate_using_the_login_screen(): void
     {
+        Role::create(['name' => 'vendor', 'guard_name' => 'web']);
         $user = User::factory()->create();
+        $user->assignRole('vendor');
 
         $response = $this->post('/login', [
             'email' => $user->email,
@@ -27,16 +30,30 @@ class AuthenticationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
+        $response->assertRedirect('/products');
     }
 
     public function test_users_can_not_authenticate_with_invalid_password(): void
+    {
+        Role::create(['name' => 'vendor', 'guard_name' => 'web']);
+        $user = User::factory()->create();
+        $user->assignRole('vendor');
+
+        $this->post('/login', [
+            'email' => $user->email,
+            'password' => 'wrong-password',
+        ]);
+
+        $this->assertGuest();
+    }
+
+    public function test_non_vendor_users_can_not_authenticate_using_the_login_screen(): void
     {
         $user = User::factory()->create();
 
         $this->post('/login', [
             'email' => $user->email,
-            'password' => 'wrong-password',
+            'password' => 'password',
         ]);
 
         $this->assertGuest();
