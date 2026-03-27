@@ -35,7 +35,7 @@ class DeployController extends Controller
 
     private function runDeploy(): void
     {
-        $path = '/home/mobilemandu/vendors.mobilemandu.com';
+        $path = '/home/mobilemandu/mm_vendors';
 
         Process::run("cd {$path} && git fetch origin");
         Process::run("cd {$path} && git reset --hard origin/main");
