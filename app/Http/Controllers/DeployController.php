@@ -33,16 +33,25 @@ class DeployController extends Controller
         }
     }
 
-    private function runDeploy(): void
-    {
-        $path = '/home/mobilemandu/mm_vendors';
+private function runDeploy(): void
+{
+    $path = '/home/mobilemandu/mm_vendors';
+    $composerHome = '/home/mobilemandu/.composer';
 
-        Process::run("cd {$path} && git fetch origin");
-        Process::run("cd {$path} && git reset --hard origin/main");
-        Process::run("cd {$path} && git clean -fd");
-
-        Process::run("cd {$path} && php artisan optimize:clear");
-
-        Process::run("cd {$path} && composer install --no-dev --optimize-autoloader")->throw();
+    // Ensure composer home exists
+    if (!is_dir($composerHome)) {
+        mkdir($composerHome, 0755, true);
     }
+
+    // Git commands
+    Process::run("cd {$path} && git fetch origin")->throw();
+    Process::run("cd {$path} && git reset --hard origin/main")->throw();
+    Process::run("cd {$path} && git clean -fd")->throw();
+
+    // Clear caches
+    Process::run("cd {$path} && php artisan optimize:clear")->throw();
+
+    // Composer install with COMPOSER_HOME set
+    Process::run("cd {$path} && COMPOSER_HOME={$composerHome} composer install --no-dev --optimize-autoloader")->throw();
+}
 }
