@@ -33,25 +33,25 @@ class DeployController extends Controller
         }
     }
 
-private function runDeploy(): void
-{
-    $path = '/home/mobilemandu/mm_vendors';
-    $composerHome = '/home/mobilemandu/.composer';
+    private function runDeploy(): void
+    {
+        $path = '/home/mobilemandu/mm_vendors';
+        $composerHome = '/home/mobilemandu/.composer';
 
-    // Ensure composer home exists
-    if (!is_dir($composerHome)) {
-        mkdir($composerHome, 0755, true);
+        // Ensure composer home exists
+        if (!is_dir($composerHome)) {
+            mkdir($composerHome, 0755, true);
+        }
+
+        // Git commands
+        Process::run("cd {$path} && git fetch origin")->throw();
+        Process::run("cd {$path} && git reset --hard origin/main")->throw();
+        Process::run("cd {$path} && git clean -fd")->throw();
+
+        // Clear caches
+        Process::run("cd {$path} && php artisan optimize:clear")->throw();
+
+        // Composer install with COMPOSER_HOME set
+        Process::run("cd {$path} && COMPOSER_HOME={$composerHome} composer install --no-dev --optimize-autoloader")->throw();
     }
-
-    // Git commands
-    Process::run("cd {$path} && git fetch origin")->throw();
-    Process::run("cd {$path} && git reset --hard origin/main")->throw();
-    Process::run("cd {$path} && git clean -fd")->throw();
-
-    // Clear caches
-    Process::run("cd {$path} && php artisan optimize:clear")->throw();
-
-    // Composer install with COMPOSER_HOME set
-    Process::run("cd {$path} && COMPOSER_HOME={$composerHome} composer install --no-dev --optimize-autoloader")->throw();
-}
 }
