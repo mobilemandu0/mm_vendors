@@ -41,7 +41,6 @@ class DeployController extends Controller
         Process::run("cd {$path} && git reset --hard origin/main");
         Process::run("cd {$path} && git clean -fd");
 
-        Process::run("cd {$path} && php artisan migrate --force");
         Process::run("cd {$path} && php artisan optimize:clear");
 
         Process::run("cd {$path} && composer install --no-dev --optimize-autoloader")->throw();
