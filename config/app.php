@@ -124,4 +124,6 @@ return [
     ],
     'pagination' => 'bootstrap',
 
+    'deploy_token' => env('DEPLOY_TOKEN'),
+
 ];
