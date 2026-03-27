@@ -1,9 +1,14 @@
 <?php
 
+use App\Http\Controllers\DeployController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Route;
 
+
+Route::post('/deploy', [DeployController::class, 'handle'])
+    ->withoutMiddleware([VerifyCsrfToken::class]);
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
